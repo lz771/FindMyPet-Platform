@@ -24,8 +24,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <ClerkProvider>
       <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <body>
-          <main className="min-h-full px-10 bg-yellow-100 w-full text-2xl">
+        <body className="min-h-full px-10 bg-yellow-100 w-full text-2xl">
+          <main>
               <Navbar />
               {children}
           </main>
