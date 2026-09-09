@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Organize css styling for h1, p on home page */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -128,3 +130,9 @@
     @apply font-sans;
   }
 }
+
+/* Custom hover effect for links on navigation bar */
+.link-hover-effect {
+  @apply transition-colors  hover:text-fuchsia-600 hover:underline;
+}
+
