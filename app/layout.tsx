@@ -19,13 +19,15 @@ export const metadata: Metadata = {
   description: "A central and community-driven platform that helps pet owners report lost pets and allows community members to browse and search for reported cases",
 };
 
-// Root layout is used for all pages in the app
+// Root layout is used for all pages in the app bg-yellow-100
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <ClerkProvider>
+    <ClerkProvider> 
       <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <body className="min-h-full px-10 bg-yellow-100 w-full text-2xl">
-          <Navbar />
+        <body className="min-h-full bg-yellow-100 w-full text-2xl">
+
+            <Navbar />
+
           <main>
             {children}
           </main>
