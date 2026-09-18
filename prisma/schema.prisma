@@ -13,90 +13,94 @@ datasource db {
   provider = "postgresql"
 }
 
-model User{
-  id Int @map("user_id") @id @default(autoincrement()) 
-  clerkID String? @unique 
-  city String? @db.VarChar(100)
+model User {
+  id      Int     @id @default(autoincrement()) @map("user_id")
+  clerkID String? @unique
+  city    String? @db.VarChar(100)
+  username String? @db.VarChar(100)
+  posts    Post[]
 
-  username String @db.VarChar(100) @default("Unknown User")
-  posts Post[]
   @@map("users")
 }
 
-model Post{
-  id Int @map("post_id") @id @default(autoincrement())
-  contactEmail String @map("contact_email") @db.VarChar(255)
-  createdAt DateTime @map("created_at") @default(now())
+model Post {
+  id           Int      @id @default(autoincrement()) @map("post_id")
+  contactEmail String   @map("contact_email") @db.VarChar(255)
+  createdAt    DateTime @default(now()) @map("created_at")
 
   // set last_modified_at to created_at when a post is created (handle on the form submission)
   // add @updatedAt after loading the dataset to database
-  lastModifiedAt DateTime @map("last_modified_at") 
+  lastModifiedAt DateTime @map("last_modified_at")
 
-  user User @relation(fields: [userID], references: [id], onDelete: Cascade) 
+  user   User @relation(fields: [userID], references: [id], onDelete: Cascade)
   userID Int
-  pet Pet?
+  pet    Pet?
+
   @@index([userID])
   @@index([createdAt])
   @@index([lastModifiedAt])
   @@map("posts")
 }
 
-model Pet{
-  id Int @map("lost_pet_id") @id @default(autoincrement())
-  petName String @db.VarChar(100)
-  species Species
-  sex Sex
-  status Status @default(Lost)
+model Pet {
+  id           Int      @id @default(autoincrement()) @map("lost_pet_id")
+  petName      String   @db.VarChar(100)
+  species      Species
+  sex          Sex
+  status       Status   @default(Lost)
   dateLastSeen DateTime @map("date_last_seen") @db.Date
-  description String? @db.VarChar(500) @default("None")
-  
-  post Post @relation(fields: [postID], references: [id], onDelete: Cascade)
-  postID Int @unique
-  location Location @relation(fields: [locationID], references: [id])
+  description  String?  @db.VarChar(500)
+
+  post       Post     @relation(fields: [postID], references: [id], onDelete: Cascade)
+  postID     Int      @unique
+  location   Location @relation(fields: [locationID], references: [id])
   locationID Int
-  image Image?
+  image      Image?
+
   @@index([locationID])
   @@index([petName])
   @@map("lost_pets")
 }
- 
-enum Species{
+
+enum Species {
   Cat
   Dog
   Bird
   Other
 }
 
-enum Sex{
+enum Sex {
   Male
   Female
   Unknown
 }
 
-enum Status{
+enum Status {
   Lost
   Reunited
 }
 
-model Image{
-  id Int @map("imageID") @id @default(autoincrement())
-  cloudinaryImgID String? @map("cloudinary_img_id") 
-  imgUrl String @map("img_url") @default("https://res.cloudinary.com/l0ozosb1/image/upload/v1789613502/no_image.avif")
-  imgAltText String @map("img_alt_text") @default("A lost-pet image")
+model Image {
+  id              Int     @id @default(autoincrement()) @map("imageID")
+  cloudinaryImgID String? @map("cloudinary_img_id")
+  imgUrl          String  @default("https://res.cloudinary.com/l0ozosb1/image/upload/v1789613502/no_image.avif") @map("img_url")
+  imgAltText      String  @default("A lost-pet image") @map("img_alt_text")
 
-  pet Pet @relation(fields: [petID], references: [id], onDelete: Cascade)
+  pet   Pet @relation(fields: [petID], references: [id], onDelete: Cascade)
   petID Int @unique
+
   @@map("images")
 }
 
-model Location{
-  id Int @map("location_id") @id @default(autoincrement())
-  city String @db.VarChar(100)
-  state String @db.VarChar(100)
+model Location {
+  id      Int    @id @default(autoincrement()) @map("location_id")
+  city    String @db.VarChar(100)
+  state   String @db.VarChar(100)
   zipcode String @db.VarChar(100)
 
   pets Pet[]
-  @@unique([city, state, zipcode]) 
+
+  @@unique([city, state, zipcode])
   @@index([city])
   @@index([state])
   @@index([zipcode])
