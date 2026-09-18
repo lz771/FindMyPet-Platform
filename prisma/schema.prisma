@@ -3,7 +3,6 @@
 
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
-//need to make changes on Post table after load the dataset
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -14,10 +13,10 @@ datasource db {
 }
 
 model User {
-  id      Int     @id @default(autoincrement()) @map("user_id")
-  clerkID String? @unique
-  city    String? @db.VarChar(100)
-  username String? @db.VarChar(100)
+  id       Int     @id @default(autoincrement()) @map("user_id")
+  clerkID  String  @unique
+  city     String? @db.VarChar(100)
+  username String  @db.VarChar(100)
   posts    Post[]
 
   @@map("users")
@@ -28,9 +27,8 @@ model Post {
   contactEmail String   @map("contact_email") @db.VarChar(255)
   createdAt    DateTime @default(now()) @map("created_at")
 
-  // set last_modified_at to created_at when a post is created (handle on the form submission)
-  // add @updatedAt after loading the dataset to database
-  lastModifiedAt DateTime @map("last_modified_at")
+  // set last_modified_at to created_at when a post is created (when loading dataset)
+  lastModifiedAt DateTime @updatedAt @map("last_modified_at")
 
   user   User @relation(fields: [userID], references: [id], onDelete: Cascade)
   userID Int
@@ -81,10 +79,10 @@ enum Status {
 }
 
 model Image {
-  id              Int     @id @default(autoincrement()) @map("imageID")
-  cloudinaryImgID String? @map("cloudinary_img_id")
-  imgUrl          String  @default("https://res.cloudinary.com/l0ozosb1/image/upload/v1789613502/no_image.avif") @map("img_url")
-  imgAltText      String  @default("A lost-pet image") @map("img_alt_text")
+  id              Int    @id @default(autoincrement()) @map("imageID")
+  cloudinaryImgID String @map("cloudinary_img_id") // Set a sample id when loading dataset
+  imgUrl          String @default("https://res.cloudinary.com/l0ozosb1/image/upload/v1789613502/no_image.avif") @map("img_url")
+  imgAltText      String @default("A lost-pet image") @map("img_alt_text")
 
   pet   Pet @relation(fields: [petID], references: [id], onDelete: Cascade)
   petID Int @unique
