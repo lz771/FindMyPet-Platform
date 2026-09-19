@@ -2,6 +2,8 @@ import { prisma } from '@/lib/prisma'
 import { verifyWebhook, WebhookEvent } from '@clerk/nextjs/webhooks'
 import { NextRequest } from 'next/server'
 
+// This file is a webhook handler that handles events send from Clerk, including user.created, user.updated, and user.deleted events
+// With the Clerk webhook, the app now able to sync Clerk data to PostgreSQL database
 export async function POST(req: NextRequest) {
   let evt: WebhookEvent;
 
