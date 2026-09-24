@@ -7,7 +7,7 @@ export default async function ReportPetPage() {
   
   return (
     <div>
-      <h1>This is the Report Pet Page</h1>
+      <h1>Report Lost Pet Form</h1>
     </div>
   )
 }

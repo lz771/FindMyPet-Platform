@@ -42,7 +42,7 @@ model Post {
 
 model Pet {
   id           Int      @id @default(autoincrement()) @map("lost_pet_id")
-  petName      String   @db.VarChar(100)
+  name         String   @db.VarChar(100)
   species      Species
   sex          Sex
   status       Status   @default(Lost)
@@ -56,7 +56,7 @@ model Pet {
   image      Image?
 
   @@index([locationID])
-  @@index([petName])
+  @@index([name])
   @@map("lost_pets")
 }
 
