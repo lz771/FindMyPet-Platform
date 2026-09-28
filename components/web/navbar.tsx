@@ -14,9 +14,9 @@ export default function Navbar() {
 
                 <div className="flex items-center gap-12 font-semibold">
                     <Link className="link-hover-effect" href="/">Home</Link>
-                    <Link className="link-hover-effect" href="/ReportPet">Report Pet</Link>
-                    <Link className="link-hover-effect" href="/LostPetGallery">Lost Pet Gallery</Link>
-                    <Link className="link-hover-effect" href="/Dashboard">Dashboard</Link>
+                    <Link className="link-hover-effect" href="/report-pet">Report Pet</Link>
+                    <Link className="link-hover-effect" href="/lost-pet-gallery">Lost Pet Gallery</Link>
+                    <Link className="link-hover-effect" href="/dashboard">Dashboard</Link>
                 </div>
 
                 <div className="flex items-center gap-4">
