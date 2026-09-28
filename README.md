@@ -16,9 +16,9 @@
   - Neon PostgreSQL database: Stores post, location, and lost-pet data submitted by users, as well as user data. 
   - Cloudinary: Stores media data(pet photos).
   - Prisma: Used it to define database schema and perform database operations(create/retrieve/update/delete post and user data). It makes database operations easier than writing raw sql queries.
-  - Clerk: Used for authentication.
+  - Clerk: Provides built-in ui components and authentication features, so I don't need to implement the authentication logic myself. 
   - Tailwind CSS: Page styling.
-  - Shadcn/ui: Provides built-in UI components(button, input field, card), which I can use them to makes the website looks better.
+  - Shadcn/ui: Provides built-in ui components(button, input field, card), which I can use to make the ui of my website components look better.
 
 # Tools & Resources I Have Used So Far
   - Visual Studio Code: A code editor that allwos me to write codes there and build my project.
