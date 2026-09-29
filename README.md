@@ -1,4 +1,4 @@
-# FindMyPet Platform Description & Goal
+# FindMyPet Platform Project Goal
   - A pet owner may share list-pet information across different social media platforms or community groups. Community people may find it difficult to find and keep track of these lost-pet posts in their local area because people share many different types of content on these platforms.
   - My project is a web application that provides a platform for people to report, search, and manage lost-pet cases. In the website, pet owners may share information for their lost pet by completing a lost-pet report form on the Report Pet page. The submitted reports will be displayed on the Lost-Pet Gallery page, allowing other users to view and search lost-pet cases in their local area. 
   - The website may introduce new features in the future based on user feedback.
@@ -12,22 +12,24 @@
   - Require authentication before accessing features, such as post creation and active posts management.
 
 # Technical Stacks
-  - Next.js: The main framework of my project. It makes the configuration between front-end and back-end simplier.
+  - Next.js: A full-stack framework that used to build both the user interface and back-end of my application.
   - Neon PostgreSQL database: Stores post, location, and lost-pet data submitted by users, as well as user data. 
   - Cloudinary: Stores media data(pet photos).
-  - Prisma: Used it to define database schema and perform database operations(create/retrieve/update/delete post and user data). It makes database operations easier than writing raw sql queries.
-  - Clerk: Provides built-in ui components and authentication features, so I don't need to implement the authentication logic myself. 
+  - Prisma: Used to define database schema and perform database operations(create/retrieve/update/delete post and user data). It makes writing database operations easier than writing raw SQL queries.
+  - Clerk: Provides built-in UI components and authentication features, so I don't need to implement the authentication logic myself. 
   - Tailwind CSS: Page styling.
-  - Shadcn/ui: Provides built-in ui components(button, input field, card), which I can use to make the ui of my website components look better.
+  - Shadcn/ui: Provides built-in UI components(button, input field, card), which I can use to make the UI of my website components look better.
 
 # Tools & Resources I Have Used So Far
-  - Visual Studio Code: A code editor that allwos me to write codes there and build my project.
+  - Visual Studio Code: A code editor. Allows me to write code and build my project.
   - Git & Github: Version controls and source code backup.
   - Node Package Manager(npm): Install and manage project dependencies and packages.
-  - ngrok: Used it for Clerk webhook testing.
+  - ngrok: Used for Clerk webhook testing.
   - "Lost animals" open dataset: Used as sample data for lost-pet posts.
   - Zod: A Typescript-first library used to validate form inputs by defining validation schema. I used it to validated form data on the server side, and show error messages to the form ui when validation fails.
-  - ChatGPT: Used to help understand and troubleshoot error messages I got during development.
+
+# AI Usage During Development
+  - ChatGPT: Used to help me understand error messages I got during development, and concepts of new technologies(Next.js, Prisma, Tailwind css).
 
 # Dataset and Attribution
   - This project uses the "Lost animals" dataset as sample data for the FindMyPet project
