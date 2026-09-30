@@ -35,7 +35,7 @@ export async function createPost(initialState: any, formData: FormData) {
     if (!validatedFields.success) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
-            message: "Fix the form errors before submitting",
+            message: "Error: Fix input field errors before submitting",
             inputs: rawData,
         }
     }
@@ -56,7 +56,7 @@ export async function createPost(initialState: any, formData: FormData) {
             console.log("Error: User not found in the database");
             return {
                 errors: {},
-                message: "Something went wrong, please contact us for details",
+                message: "Error: Something went wrong, please contact us for details",
                 inputs: rawData,
             };
         }
@@ -69,14 +69,25 @@ export async function createPost(initialState: any, formData: FormData) {
             }
         })
 
-        // Store location data
-        const location = await prisma.location.create({
-            data: {
+        // Store location data (location data should be unique in the database)
+        let location;
+        const existedLocation = await prisma.location.findFirst({
+            where: {
                 city: rawData.city,
                 state: rawData.state,
                 zipcode: rawData.zipcode,
             }
         })
+
+        if (!existedLocation) {
+            location = await prisma.location.create({
+                data: {
+                    city: rawData.city,
+                    state: rawData.state,
+                    zipcode: rawData.zipcode,
+                }
+            }) 
+        } else location = existedLocation;
 
         // Store pet data
         const dateLastSeen = new Date(`${rawData.dateLastSeen}T00:00:00.000Z`);
@@ -92,11 +103,12 @@ export async function createPost(initialState: any, formData: FormData) {
             }
         })
 
-        // Upload image to Cloudinary
+        // Upload image to Cloudinary (Check if the user has uploaded a pet photo)
         const imgFile = rawData.image;
-        if (imgFile) {
-            const arrayBuffer = await imgFile.arrayBuffer(); // Change the file to arrayBuffer
-            const buffer = Buffer.from(arrayBuffer); // Convert it into Node.js Buffer, so that we can use Cloudinary upload stream to upload image to Cloudinary
+
+        if (imgFile && imgFile.size > 0) {
+            const arrayBuffer = await imgFile.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
 
             // result has the secure_url and public_id for the image uploaded to Cloudinary
             const result = await new Promise((resolve, reject) => {
@@ -110,10 +122,18 @@ export async function createPost(initialState: any, formData: FormData) {
             })
 
             // Store image's secure_url and public_id as image data
-            const image = await prisma.image.create({
+            await prisma.image.create({
                 data: {
                     cloudinaryImgID: (result as { public_id: string }).public_id,
                     imgUrl: (result as { secure_url: string }).secure_url,
+                    petID: pet.id,
+                }
+            })
+        } else {
+            // The photo wasn't uploaded
+            await prisma.image.create({
+                data: {
+                    cloudinaryImgID: "no Image ID",
                     petID: pet.id,
                 }
             })
@@ -127,11 +147,11 @@ export async function createPost(initialState: any, formData: FormData) {
 
     } catch (error) {
         console.error("Failed to create post:", error);
-        return { 
+        return {
             error: "Failed to create post",
-            message: "Something went wrong, please try it later",
+            message: "Error: Something went wrong, please try it later",
             inputs: rawData,
-         };
+        };
     }
 }
 
