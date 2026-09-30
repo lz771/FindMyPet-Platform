@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -76,35 +76,82 @@ const states = [
     { label: "Wyoming", value: "WY" },
 ]
 
-type FormErrors = {
-    petName?: string[]
-    email?: string[]
-    species?: string[]
-    sex?: string[]
-    dateLastSeen?: string[]
-    city?: string[]
-    state?: string[]
-    zipcode?: string[]
-    description?: string[]
-    image?: string[]
-}
-
 type FormState = {
-    errors?: FormErrors
+    errors?: {
+        petName?: string[]
+        email?: string[]
+        species?: string[]
+        sex?: string[]
+        dateLastSeen?: string[]
+        city?: string[]
+        state?: string[]
+        zipcode?: string[]
+        description?: string[]
+        image?: string[]
+    }
     message?: string
-    inputs?: any
+    inputs?: {
+        petName: string,
+        email: string,
+        dateLastSeen: string,
+        city: string,
+        zipcode: string,
+        description: string,
+    }
 }
 
 const initialState: FormState = {
     errors: {},
     message: "",
+    inputs: {
+        petName: "",
+        email: "",
+        dateLastSeen: "",
+        city: "",
+        zipcode: "",
+        description: "",
+    },
 }
 
 
 export default function CreatePostForm() {
 
-    // Catch error messages send from the server side validation and disply them on the form
+    // Catch error messages send from the server side validation and disply them on the form UI
     const [state, action, isPending] = useActionState<FormState, FormData>(createPost, initialState);
+
+
+    // Prevent losing field values the user just entered when form is submitted but validation fails
+    const [nameValue, setNameValue] = useState("");
+    const [emailValue, setEmailValue] = useState("");
+    const [dateValue, setDateValue] = useState("");
+    const [cityValue, setCityValue] = useState("");
+    const [zipValue, setZipValue] = useState("");
+    const [descValue, setDescValue] = useState("");
+
+    useEffect(() => {
+        setNameValue(state.inputs?.petName ?? "");
+    }, [state.inputs?.petName]);
+
+    useEffect(() => {
+        setEmailValue(state.inputs?.email ?? "");
+    }, [state.inputs?.email]);
+
+        useEffect(() => {
+        setDateValue(state.inputs?.dateLastSeen ?? "");
+    }, [state.inputs?.dateLastSeen]);
+
+        useEffect(() => {
+        setCityValue(state.inputs?.city ?? "");
+    }, [state.inputs?.city]);
+
+        useEffect(() => {
+        setZipValue(state.inputs?.zipcode ?? "");
+    }, [state.inputs?.zipcode]);
+
+        useEffect(() => {
+        setDescValue(state.inputs?.description ?? "");
+    }, [state.inputs?.description]);
+
 
     return (
         <Card className="w-full max-w-1/2 mx-auto">
@@ -118,7 +165,8 @@ export default function CreatePostForm() {
                                     id="petName"
                                     name="petName"
                                     type="text"
-                                    defaultValue={state.inputs?.petName}
+                                    value={nameValue}
+                                    onChange={(e) => setNameValue(e.target.value)}
                                     required
                                     maxLength={12}
                                     placeholder="Enter the pet's name here..." />
@@ -131,7 +179,8 @@ export default function CreatePostForm() {
                                     id="email"
                                     name="email"
                                     type="email"
-                                    defaultValue={state.inputs?.email}
+                                    value={emailValue}
+                                    onChange={(e) => setEmailValue(e.target.value)}
                                     required
                                     placeholder="example@email.com" />
                                 {state.errors?.email && <p className="text-red-500 text-sm">{state.errors.email[0]}</p>}
@@ -182,7 +231,8 @@ export default function CreatePostForm() {
                                     id="dateLastSeen"
                                     name="dateLastSeen"
                                     type="date"
-                                    defaultValue={state.inputs?.dateLastSeen}
+                                    value={dateValue}
+                                    onChange={(e) => setDateValue(e.target.value)}
                                     required />
                                 {state.errors?.dateLastSeen && <p className="text-red-500 text-sm">{state.errors.dateLastSeen[0]}</p>}
                             </div>
@@ -195,7 +245,8 @@ export default function CreatePostForm() {
                                     id="city"
                                     name="city"
                                     type="text"
-                                    defaultValue={state.inputs?.city}
+                                    value={cityValue}
+                                    onChange={(e) => setCityValue(e.target.value)}
                                     maxLength={20}
                                     required
                                     placeholder="Enter city name here..." />
@@ -208,6 +259,7 @@ export default function CreatePostForm() {
                                     <ComboboxInput
                                         id="state"
                                         name="state"
+                                        required
                                         placeholder="Select state" />
                                     <ComboboxContent>
                                         <ComboboxEmpty>No items found</ComboboxEmpty>
@@ -229,7 +281,8 @@ export default function CreatePostForm() {
                                     id="zipcode"
                                     name="zipcode"
                                     type="text"
-                                    defaultValue={state.inputs?.zipcode}
+                                    value={zipValue}
+                                    onChange={(e) => setZipValue(e.target.value)}
                                     required
                                     maxLength={5}
                                     placeholder="Enter the 5-digits zip code here..." />
@@ -244,7 +297,8 @@ export default function CreatePostForm() {
                                     <InputGroupTextarea
                                         id="description"
                                         name="description"
-                                        defaultValue={state.inputs?.description}
+                                        value={descValue}
+                                        onChange={(e) => setDescValue(e.target.value)}
                                         className="resize-none"
                                         placeholder="Provide a description of the lost pet here..."
                                     />
@@ -260,7 +314,6 @@ export default function CreatePostForm() {
                                     id="image"
                                     name="image"
                                     type="file"
-                                    defaultValue={state.inputs?.image}
                                     accept="image/*"
                                     className="bg-orange-200 font-semibold file:mr-6" />
                                 {state.errors?.image && <p className="text-red-500 text-sm">{state.errors.image[0]}</p>}
@@ -273,7 +326,6 @@ export default function CreatePostForm() {
                             </Button>
                         </div>
                         {state.message && <p className="text-red-500">{state.message}</p>}
-
                     </div>
                 </form>
             </CardContent>

@@ -80,7 +80,7 @@ enum Status {
 
 model Image {
   id              Int    @id @default(autoincrement()) @map("imageID")
-  cloudinaryImgID String @map("cloudinary_img_id") // Set a sample id when loading dataset
+  cloudinaryImgID String @map("cloudinary_img_id") // this one should bu null
   imgUrl          String @default("https://res.cloudinary.com/l0ozosb1/image/upload/v1789613502/no_image.avif") @map("img_url")
   imgAltText      String @default("A lost-pet image") @map("img_alt_text")
 
