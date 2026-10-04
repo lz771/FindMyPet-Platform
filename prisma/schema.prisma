@@ -26,8 +26,6 @@ model Post {
   id           Int      @id @default(autoincrement()) @map("post_id")
   contactEmail String   @map("contact_email") @db.VarChar(255)
   createdAt    DateTime @default(now()) @map("created_at")
-
-  // set last_modified_at to created_at when a post is created (when loading dataset)
   lastModifiedAt DateTime @updatedAt @map("last_modified_at")
 
   user   User @relation(fields: [userID], references: [id], onDelete: Cascade)
@@ -80,7 +78,7 @@ enum Status {
 
 model Image {
   id              Int    @id @default(autoincrement()) @map("imageID")
-  cloudinaryImgID String @map("cloudinary_img_id") // this one should bu null
+  cloudinaryImgID String? @map("cloudinary_img_id") 
   imgUrl          String @default("https://res.cloudinary.com/l0ozosb1/image/upload/v1789613502/no_image.avif") @map("img_url")
   imgAltText      String @default("A lost-pet image") @map("img_alt_text")
 
