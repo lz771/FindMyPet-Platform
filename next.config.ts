@@ -6,12 +6,16 @@ const nextConfig: NextConfig = {
   // ngrok
   allowedDevOrigins: [process.env.NGROK_FORWARDING_URL!],
 
-  // Cloudinary
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
+      },
+
+      {
+        protocol: 'https',
+        hostname: 'petharbor.com',
       }
     ]
   },

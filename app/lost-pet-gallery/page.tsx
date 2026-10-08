@@ -1,7 +1,57 @@
-export default function LostPetGalleryPage() {
+import PostCard from "@/components/web/PostCard";
+import { prisma } from "@/lib/prisma";
+
+export default async function LostPetGalleryPage() {
+  const posts = await prisma.post.findMany({
+    select: {
+      id: true,
+      createdAt: true,
+
+      pet: {
+        select: {
+          id: true,
+          name: true,
+          sex: true,
+          species: true,
+          dateLastSeen: true,
+          status: true,
+
+          location: {
+            select: {
+              city: true,
+              state: true,
+              zipcode: true,
+            },
+          },
+
+          image: {
+            select: {
+              imgUrl: true,
+              imgAltText: true,
+            }
+          },
+        },
+      },
+    },
+
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   return (
     <div>
-      <h1>This is the Lost Pet Gallery Page</h1>
-    </div>  
+      <h1 className="text-center my-8">
+        {posts.length != 0 ? `There are ${posts.length} lost pets are reported on FindMyPet Platform` : "No lost pets found"}
+      </h1>
+
+      <div className="grid grid-cols-1 2xl:grid-cols-2 2xl:px-70 gap-3">
+        {posts.map((post) => (
+          <div key={post.id} className="my-1">
+            {<PostCard post={post} />}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
