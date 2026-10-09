@@ -61,6 +61,19 @@ export async function createPost(initialState: any, formData: FormData) {
             };
         }
 
+        // Users can create a maximum of five posts
+        const posts = await prisma.post.findMany({
+            where: { userID: dbUser.id }
+        })
+
+        if (posts.length > 5){
+            return {
+                errors: {},
+                message: "Sorry, you can create at most five posts in the FindMyPet Platform",
+                inputs: rawData,
+            };
+        }
+
         // Store post data
         const post = await prisma.post.create({
             data: {
