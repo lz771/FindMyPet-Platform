@@ -1,3 +1,4 @@
+import FilterForm from "@/components/web/FilterForm";
 import PostCard from "@/components/web/PostCard";
 import { prisma } from "@/lib/prisma";
 
@@ -40,8 +41,10 @@ export default async function LostPetGalleryPage() {
   });
 
   return (
-    <div>
-      <h1 className="text-center my-8">
+    <div className="flex flex-col space-y-6">
+      <FilterForm />
+      
+      <h1 className="text-center">
         {posts.length != 0 ? `There are ${posts.length} lost pets are reported on FindMyPet Platform` : "No lost pets found"}
       </h1>
 

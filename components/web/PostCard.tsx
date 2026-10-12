@@ -55,7 +55,7 @@ const reportedTime = (createdAt: Date) => {
 export default function PostCard({ post }: PostCardProps) {
     return (
         <div className="w-full max-w-lg mx-auto flex flex-row bg-white rounded-md shadow-lg text-base text-nowrap">
-            <div className="relative h-70 w-1/2 shrink-0 rounded-l-md 4ounded-tr-none bg-gray-200">
+            <div className="relative h-70 w-1/2 shrink-0 rounded-l-md rounded-tr-none bg-gray-200">
                 <Image
                     src={post.pet?.image?.imgUrl ?? ""}
                     width={500}
