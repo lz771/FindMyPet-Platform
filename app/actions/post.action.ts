@@ -28,7 +28,6 @@ export async function createPost(initialState: any, formData: FormData) {
         image: formData.get("image") as File,
     };
 
-
     const validatedFields = createPostSchema.safeParse(rawData);
 
     // Return if the form data is invalid
@@ -36,7 +35,6 @@ export async function createPost(initialState: any, formData: FormData) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
             message: "Error: Fix input field errors before submitting",
-            inputs: rawData,
         }
     }
 
@@ -57,7 +55,6 @@ export async function createPost(initialState: any, formData: FormData) {
             return {
                 errors: {},
                 message: "Error: Something went wrong, please contact us for details",
-                inputs: rawData,
             };
         }
 
@@ -70,7 +67,6 @@ export async function createPost(initialState: any, formData: FormData) {
             return {
                 errors: {},
                 message: "Sorry, you can create at most five posts in the FindMyPet Platform",
-                inputs: rawData,
             };
         }
 
@@ -103,7 +99,7 @@ export async function createPost(initialState: any, formData: FormData) {
         } else location = existedLocation;
 
         // Store pet data
-        const dateLastSeen = new Date(`${rawData.dateLastSeen}T00:00:00.000Z`);
+        const dateLastSeen = new Date(rawData.dateLastSeen);
         const pet = await prisma.pet.create({
             data: {
                 name: rawData.petName,
@@ -163,7 +159,6 @@ export async function createPost(initialState: any, formData: FormData) {
         return {
             error: "Failed to create post",
             message: "Error: Something went wrong, please try it later",
-            inputs: rawData,
         };
     }
 }

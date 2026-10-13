@@ -90,27 +90,11 @@ type FormState = {
         image?: string[]
     }
     message?: string
-    inputs?: {
-        petName: string,
-        email: string,
-        dateLastSeen: string,
-        city: string,
-        zipcode: string,
-        description: string,
-    }
 }
 
 const initialState: FormState = {
     errors: {},
     message: "",
-    inputs: {
-        petName: "",
-        email: "",
-        dateLastSeen: "",
-        city: "",
-        zipcode: "",
-        description: "",
-    },
 }
 
 
@@ -119,39 +103,13 @@ export default function CreatePostForm() {
     // Catch error messages send from the server side validation and disply them on the form UI
     const [state, action, isPending] = useActionState<FormState, FormData>(createPost, initialState);
 
-
     // Prevent losing field values the user just entered when form is submitted but validation fails
-    const [nameValue, setNameValue] = useState("");
-    const [emailValue, setEmailValue] = useState("");
-    const [dateValue, setDateValue] = useState("");
-    const [cityValue, setCityValue] = useState("");
-    const [zipValue, setZipValue] = useState("");
-    const [descValue, setDescValue] = useState("");
-
-    useEffect(() => {
-        setNameValue(state.inputs?.petName ?? "");
-    }, [state.inputs?.petName]);
-
-    useEffect(() => {
-        setEmailValue(state.inputs?.email ?? "");
-    }, [state.inputs?.email]);
-
-        useEffect(() => {
-        setDateValue(state.inputs?.dateLastSeen ?? "");
-    }, [state.inputs?.dateLastSeen]);
-
-        useEffect(() => {
-        setCityValue(state.inputs?.city ?? "");
-    }, [state.inputs?.city]);
-
-        useEffect(() => {
-        setZipValue(state.inputs?.zipcode ?? "");
-    }, [state.inputs?.zipcode]);
-
-        useEffect(() => {
-        setDescValue(state.inputs?.description ?? "");
-    }, [state.inputs?.description]);
-
+    const [petName, setPetName] = useState("");
+    const [email, setEmail] = useState("");
+    const [date, setDate] = useState("");
+    const [city, setCity] = useState("");
+    const [zipcode, setZipcode] = useState("");
+    const [description, setDescription] = useState("");
 
     return (
         <Card className="w-full max-w-1/2 mx-auto">
@@ -165,8 +123,8 @@ export default function CreatePostForm() {
                                     id="petName"
                                     name="petName"
                                     type="text"
-                                    value={nameValue}
-                                    onChange={(e) => setNameValue(e.target.value)}
+                                    value={petName}
+                                    onChange={(e) => setPetName(e.target.value)}
                                     required
                                     maxLength={12}
                                     placeholder="Enter the pet's name here..." />
@@ -179,8 +137,8 @@ export default function CreatePostForm() {
                                     id="email"
                                     name="email"
                                     type="email"
-                                    value={emailValue}
-                                    onChange={(e) => setEmailValue(e.target.value)}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     required
                                     placeholder="example@email.com" />
                                 {state.errors?.email && <p className="text-red-500 text-sm">{state.errors.email[0]}</p>}
@@ -231,8 +189,8 @@ export default function CreatePostForm() {
                                     id="dateLastSeen"
                                     name="dateLastSeen"
                                     type="date"
-                                    value={dateValue}
-                                    onChange={(e) => setDateValue(e.target.value)}
+                                    value={date}
+                                    onChange={(e) => setDate(e.target.value)}
                                     required />
                                 {state.errors?.dateLastSeen && <p className="text-red-500 text-sm">{state.errors.dateLastSeen[0]}</p>}
                             </div>
@@ -245,8 +203,8 @@ export default function CreatePostForm() {
                                     id="city"
                                     name="city"
                                     type="text"
-                                    value={cityValue}
-                                    onChange={(e) => setCityValue(e.target.value)}
+                                    value={city}
+                                    onChange={(e) => setCity(e.target.value)}
                                     maxLength={20}
                                     required
                                     placeholder="Enter city name here..." />
@@ -281,8 +239,8 @@ export default function CreatePostForm() {
                                     id="zipcode"
                                     name="zipcode"
                                     type="text"
-                                    value={zipValue}
-                                    onChange={(e) => setZipValue(e.target.value)}
+                                    value={zipcode}
+                                    onChange={(e) => setZipcode(e.target.value)}
                                     required
                                     maxLength={5}
                                     placeholder="Enter the 5-digits zip code here..." />
@@ -297,8 +255,8 @@ export default function CreatePostForm() {
                                     <InputGroupTextarea
                                         id="description"
                                         name="description"
-                                        value={descValue}
-                                        onChange={(e) => setDescValue(e.target.value)}
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
                                         className="resize-none"
                                         placeholder="Provide a description of the lost pet here..."
                                     />

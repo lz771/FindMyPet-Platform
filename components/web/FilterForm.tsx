@@ -100,11 +100,11 @@ export default function FilterForm() {
         <Form action="/lost-pet-gallery">
             <div className="max-w-full bg-white flex flex-row space-x-10 px-6 py-4 shadow-sm">
                 <div>
-                    <Label htmlFor="species" className="font-bold px-1">Species</Label>
+                    <Label htmlFor="species">Species</Label>
                     <Select
                         name="species"
                         value={selectedSpecies}
-                        onValueChange={(value) => setSelectedSpecies(value)}>
+                        onValueChange={(e) => setSelectedSpecies(e)}>
                         <SelectTrigger id="species">
                             <SelectValue className="w-15" />
                         </SelectTrigger>
@@ -119,11 +119,11 @@ export default function FilterForm() {
                 </div>
 
                 <div>
-                    <Label htmlFor="status" className="font-bold px-1">Status</Label>
+                    <Label htmlFor="status">Status</Label>
                     <Select
                         name="status"
                         value={selectedStatus}
-                        onValueChange={(value) => setSelectedStatus(value)}>
+                        onValueChange={(e) => setSelectedStatus(e)}>
                         <SelectTrigger id="status" >
                             <SelectValue className="w-15" />
                         </SelectTrigger>
@@ -138,11 +138,11 @@ export default function FilterForm() {
                 </div>
 
                 <div>
-                    <Label htmlFor="sex" className="font-bold px-1">Sex</Label>
+                    <Label htmlFor="sex">Sex</Label>
                     <Select
                         name="sex"
                         value={selectedSex}
-                        onValueChange={(value) => setSelectedSex(value)}>
+                        onValueChange={(e) => setSelectedSex(e)}>
                         <SelectTrigger id="sex" >
                             <SelectValue className="w-15" />
                         </SelectTrigger>
@@ -157,11 +157,11 @@ export default function FilterForm() {
                 </div>
 
                 <div>
-                    <Label htmlFor="state" className="font-bold px-1">State</Label>
+                    <Label htmlFor="state">State</Label>
                     <Combobox
                         items={states}
                         value={selectedState}
-                        onValueChange={(value) => setSelectedState(value)}>
+                        onValueChange={(e) => setSelectedState(e)}>
                         <ComboboxInput
                             id="state"
                             name="state"
@@ -180,7 +180,7 @@ export default function FilterForm() {
                 </div>
 
                 <div>
-                    <Label htmlFor="city" className="font-bold px-1">City</Label>
+                    <Label htmlFor="city">City</Label>
                     <Input
                         id="city"
                         name="city"
@@ -189,7 +189,7 @@ export default function FilterForm() {
                 </div>
 
                 <div>
-                    <Label htmlFor="zipcode" className="font-bold px-1">Zip Code</Label>
+                    <Label htmlFor="zipcode">Zip Code</Label>
                     <Input
                         id="zipcode"
                         name="zipcode"
@@ -198,7 +198,7 @@ export default function FilterForm() {
                 </div>
 
                 <div>
-                    <Label htmlFor="petName" className="font-bold px-1">Pet Name</Label>
+                    <Label htmlFor="petName">Pet Name</Label>
                     <Input
                         id="petName"
                         name="petName"
@@ -207,7 +207,7 @@ export default function FilterForm() {
                 </div>
 
                 <div>
-                    <Label htmlFor="petID" className="font-bold px-1">Pet ID</Label>
+                    <Label htmlFor="petID">Pet ID</Label>
                     <Input
                         id="petID"
                         name="petID"

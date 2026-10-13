@@ -30,6 +30,7 @@ interface PostCardProps {
     }
 }
 
+// Convert post creation time into "just now" or "minutes/hours/days/months/years ago", based on the current time
 const reportedTime = (createdAt: Date) => {
     const currentDateTime = new Date();
 
