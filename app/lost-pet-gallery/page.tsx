@@ -1,5 +1,6 @@
 import FilterForm from "@/components/web/FilterForm";
 import PostCard from "@/components/web/PostCard";
+import { Sex, Species, Status } from "@/generated/prisma/enums";
 import { prisma } from "@/lib/prisma";
 
 export default async function LostPetGalleryPage({
@@ -7,10 +8,40 @@ export default async function LostPetGalleryPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+  // Read submitted filter form data from url
+  const filterValues = await searchParams;
+  const speciesValue = filterValues.species === "All" ? undefined : filterValues.species as Species;
+  const statusValue = filterValues.status as Status || undefined;
+  const sexValue = filterValues.sex === "All" ? undefined : filterValues.sex as Sex;
+  const stateValue = filterValues.state === "All" ? undefined : filterValues.state as string;
+  const cityValue = filterValues.city as string || undefined;
+  const zipcodeValue = filterValues.zipcode as string || undefined;
+  const petNameValue = filterValues.petName as string || undefined;
+  const petIDValue = Number(filterValues.petID) || undefined;
 
-  const { species = '', status = '', sex = '', state = '', city = '', zipcode = '', petName = '', petID = '' } = await searchParams;
-
+  // Fetch post data
   const posts = await prisma.post.findMany({
+    // Filter posts based on submitted filter form data
+    where: {
+      pet: {
+        AND: [
+          { species: speciesValue },
+          { status: statusValue },
+          { sex: sexValue },
+          { name: petNameValue },
+          { id: petIDValue },
+        ],
+
+        location: {
+          AND: [
+            { state: stateValue },
+            { city: cityValue },
+            { zipcode: zipcodeValue },
+          ],
+        },
+      },
+    },
+
     select: {
       id: true,
       createdAt: true,

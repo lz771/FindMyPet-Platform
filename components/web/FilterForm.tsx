@@ -24,7 +24,6 @@ const sex = [
 ]
 
 const status = [
-    { label: "All", value: "All"},
     { label: "Lost", value: "Lost" },
     { label: "Reunited", value: "Reunited" },
 ]
@@ -85,13 +84,13 @@ const states = [
 
 export default function FilterForm() {
     const [selectedSpecies, setSelectedSpecies] = useState<string | null>("All");
-    const [selectedStatus, setSelectedStatus] = useState<string | null>("All");
+    const [selectedStatus, setSelectedStatus] = useState<string | null>("Lost");
     const [selectedSex, setSelectedSex] = useState<string | null>("All");
     const [selectedState, setSelectedState] = useState<string | null>("All");
 
     function handleReset() {
         setSelectedSpecies("All");
-        setSelectedStatus("All");
+        setSelectedStatus("Lost");
         setSelectedSex("All");
         setSelectedState("All");
     }
