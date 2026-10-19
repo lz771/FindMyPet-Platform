@@ -4,37 +4,36 @@ import { buttonVariants } from "../ui/button";
 import Link from "next/link";
 import { Sex, Species, Status } from "@/generated/prisma/enums";
 
-interface PostCardProps {
-    post: {
+export interface Post {
+    id: number;
+    createdAt: Date;
+    lastModifiedAt: Date;
+    pet: {
         id: number;
-        createdAt: Date;
-        pet: {
-            id: number;
-            name: string;
-            sex: Sex;
-            species: Species;
-            dateLastSeen: Date;
-            status: Status;
+        name: string;
+        sex: Sex;
+        species: Species;
+        dateLastSeen: Date;
+        status: Status;
 
-            location: {
-                city: string;
-                state: string;
-                zipcode: string;
-            };
+        location: {
+            city: string;
+            state: string;
+            zipcode: string;
+        };
 
-            image: {
-                imgUrl: string;
-                imgAltText: string;
-            } | null;
+        image: {
+            imgUrl: string;
+            imgAltText: string;
         } | null;
-    }
+    } | null;
 }
 
-// Convert post creation time into "just now" or "minutes/hours/days/months/years ago", based on the current time
-const reportedTime = (createdAt: Date) => {
+// Convert time into "just now" or "minutes/hours/days/months/years ago", based on the current time
+const convertTime = (date: Date) => {
     const currentDateTime = new Date();
 
-    const sec = Math.floor((currentDateTime.getTime() - createdAt.getTime()) / 1000);
+    const sec = Math.floor((currentDateTime.getTime() - date.getTime()) / 1000);
     if (sec < 60) return "just now";
 
     const min = Math.floor(sec / 60)
@@ -53,38 +52,39 @@ const reportedTime = (createdAt: Date) => {
     return `${yr} year${yr == 1 ? "" : "s"} ago`
 }
 
-export default function PostCard({ post }: PostCardProps) {
+// A reusable post card for displaying post 
+export default function PostCard({ id, createdAt, lastModifiedAt, pet }: Post) {
     return (
         <div className="w-full max-w-lg mx-auto flex flex-row bg-white rounded-md shadow-lg text-base text-nowrap">
             <div className="relative h-70 w-1/2 shrink-0 rounded-l-md rounded-tr-none bg-gray-200">
                 <Image
-                    src={post.pet?.image?.imgUrl ?? ""}
+                    src={pet?.image?.imgUrl ?? ""}
                     width={500}
                     height={500}
                     style={{ objectFit: "fill" }}
-                    alt={post.pet?.image?.imgAltText ?? "This is a lost-pet image"}
+                    alt={pet?.image?.imgAltText ?? "This is a lost-pet image"}
                     className="w-full h-70 object-cover rounded-l-md rounded-tr-none"
                 />
-                <p className="absolute right-0 bottom-0 text-gray-400 text-sm font-bold bg-amber-50 rounded-l-xs px-1">ID: {post.pet?.id}</p>
+                <p className="absolute right-0 bottom-0 text-gray-400 text-sm font-bold bg-amber-50 rounded-l-xs px-1">ID: {pet?.id}</p>
             </div>
 
             <div className="w-full p-4 items-center border-l-2">
                 <div className="grid grid-cols-2 items-center space-x-5">
-                    <h1 className="text-2xl text-nowrap font-bold">{post.pet?.name}</h1>
-                    <Badge className={`font-bold text-base ml-auto p-2 ${post.pet?.status === "Lost" ? "bg-red-500" : "bg-green-500"}`}>
-                        {post.pet?.status}
+                    <h1 className="text-2xl text-nowrap font-bold">{pet?.name}</h1>
+                    <Badge className={`font-bold text-base ml-auto p-2 ${pet?.status === "Lost" ? "bg-red-500" : "bg-green-500"}`}>
+                        {pet?.status}
                     </Badge>
                 </div>
 
-                <div className=" text-gray-600 space-y-3 pt-3 pb-3 border-t">
-                    <p>{post.pet?.sex} {post.pet?.species}</p>
-                    <p>📍 {post.pet?.location.city}, {post.pet?.location.state} {post.pet?.location.zipcode}</p>
-                    <p>🗓 {post.pet?.dateLastSeen.toLocaleDateString()}</p>
-                    <p>📝 Reported {reportedTime(post.createdAt)}</p>
+                <div className=" text-gray-600 space-y-3 pt-3 border-t">
+                    <p>{pet?.sex} {pet?.species}</p>
+                    <p>📍 {pet?.location.city}, {pet?.location.state} {pet?.location.zipcode}</p>
+                    <p>🗓 {pet?.dateLastSeen.toLocaleDateString()}</p>
+                    <p className="text-xs pt-3">Reported {convertTime(createdAt)}; Updated {convertTime(lastModifiedAt)}</p>
                 </div>
 
-                <div className="grid grid-cols-1 pt-4 border-t">
-                    <Link className={buttonVariants({ size: "lg" })} href={`/post-details/${post.id}`}>View More</Link>
+                <div className="grid grid-cols-1 pt-5 border-t">
+                    <Link className={buttonVariants({ size: "lg" })} href={`/post-details/${id}`}>View More</Link>
                 </div>
             </div>
         </div>

@@ -82,22 +82,29 @@ const states = [
     { label: "Wyoming", value: "WY" },
 ]
 
+const sortBy = [
+    { label: "Most recently reported", value: "Most recently reported" },
+    { label: "Most recently updated", value: "Most recently updated" },
+]
+
 export default function FilterForm() {
     const [selectedSpecies, setSelectedSpecies] = useState<string | null>("All");
     const [selectedStatus, setSelectedStatus] = useState<string | null>("Lost");
     const [selectedSex, setSelectedSex] = useState<string | null>("All");
     const [selectedState, setSelectedState] = useState<string | null>("All");
+    const [selectedSortBy, setSelectedSortBy] = useState<string | null>("Most recently reported");
 
     function handleReset() {
         setSelectedSpecies("All");
         setSelectedStatus("Lost");
         setSelectedSex("All");
         setSelectedState("All");
+        setSelectedSortBy("Most recently reported");
     }
 
     return (
         <Form action="/lost-pet-gallery">
-            <div className="max-w-full bg-white flex flex-row space-x-10 px-6 py-4 shadow-sm">
+            <div className="max-w-full bg-white flex flex-row space-x-5 px-6 py-4 shadow-sm">
                 <div>
                     <Label htmlFor="species">Species</Label>
                     <Select
@@ -212,6 +219,25 @@ export default function FilterForm() {
                         name="petID"
                         type="text"
                         className="w-35" />
+                </div>
+
+                <div>
+                    <Label htmlFor="sortBy">Sort by</Label>
+                    <Select
+                        name="sortBy"
+                        value={selectedSortBy}
+                        onValueChange={(e) => setSelectedSortBy(e)}>
+                        <SelectTrigger id="sortBy" >
+                            <SelectValue className="w-32" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                {sortBy.map((item) => (
+                                    <SelectItem key={item.value} value={item.value}> {item.label} </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 <div className="ml-auto py-2 space-x-8">
