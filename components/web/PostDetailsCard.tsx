@@ -4,14 +4,14 @@ import { Sex, Species, Status } from "@/generated/prisma/enums";
 
 export interface PostDetails {
     contactEmail: string;
-    pet?: {
+    pet: {
         id: number;
         name: string;
         sex: Sex;
         species: Species;
         dateLastSeen: Date;
         status: Status;
-        description?: string;
+        description: string | null;
 
         location: {
             city: string;
@@ -19,14 +19,14 @@ export interface PostDetails {
             zipcode: string;
         };
 
-        image?: {
+        image: {
             imgUrl: string;
             imgAltText: string;
-        }
-    }
+        } | null;
+    } | null;
 }
 
-// Used to display post details on the Post Details
+// Used to display post details on the Post Details Page
 export default function PostDetailsCard({ pet, contactEmail }: PostDetails) {
 
     const date = pet?.dateLastSeen.toLocaleDateString();
@@ -40,16 +40,16 @@ export default function PostDetailsCard({ pet, contactEmail }: PostDetails) {
     ]
 
     return (
-        <div className="grid grid-row-2 w-full max-w-5xl mx-auto text-base lg:text-2xl tracking-wider font-bold text-nowrap">
+        <div className="grid grid-row-2 w-full max-w-6xl mx-auto text-base lg:text-2xl tracking-wider font-bold text-nowrap">
             <div className="flex flex-col md:flex-row bg-white rounded-md shadow-lg ">
-                <div className="h-90 sm:h-100 md:h-150 shrink-0 md:aspect-2/3 rounded-md bg-grey-200 m-5">
+                <div className="h-70 sm:h-120 lg:h-150 shrink-0 md:aspect-2/3 rounded-md bg-grey-200 m-3">
                     <Image
                         src={pet?.image?.imgUrl ?? "https://res.cloudinary.com/l0ozosb1/image/upload/v1789613502/no_image.avif"}
                         width={500}
                         height={500}
                         style={{ objectFit: "fill" }}
                         alt={pet?.image?.imgAltText ?? "This is a lost-pet image"}
-                        className="h-90 sm:h-100 w-full md:aspect-2/3 md:h-150 object-cover rounded-md"
+                        className="h-70 sm:h-120 w-full md:aspect-2/3 lg:h-150 object-cover rounded-md"
                     />
                 </div>
 
