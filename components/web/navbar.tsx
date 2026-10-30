@@ -1,6 +1,5 @@
 import Link from "next/link"
-import { buttonVariants } from "../ui/button"
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs"
+import { Show, SignInButton, SignOutButton, SignUpButton } from "@clerk/nextjs"
 
 export default function Navbar() {
     return (
@@ -22,19 +21,23 @@ export default function Navbar() {
                 <div className="flex items-center gap-4">
                     <Show when="signed-out">
                         <SignUpButton>
-                            <button className="bg-fuchsia-600 text-white rounded-lg font-semibold hover:bg-fuchsia-700 sm:text-base lg:text-lg h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                            <button className="bg-fuchsia-600 text-white rounded-lg font-semibold hover:bg-fuchsia-700 sm:text-base lg:text-lg h-8 sm:h-10 px-4 sm:px-4 cursor-pointer">
                                 Create Account
                             </button>
                         </SignUpButton>
 
                         <SignInButton>
-                            <button className="bg-light-red-1 text-white rounded-lg font-semibold hover:bg-light-red-2 sm:text-base lg:text-lg h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                            <button className="bg-light-red-1 text-white rounded-lg font-semibold hover:bg-light-red-2 sm:text-base lg:text-lg h-8 sm:h-10 px-4 sm:px-4 cursor-pointer">
                                 Sign In
                             </button>
                         </SignInButton>
                     </Show>
                     <Show when="signed-in">
-                        <UserButton />
+                        <SignOutButton>
+                            <button className="bg-light-red-1 text-white rounded-lg font-semibold hover:bg-light-red-2 sm:text-base lg:text-lg h-8 sm:h-10 px-4 sm:px-4 cursor-pointer">
+                                Sign Out
+                            </button>
+                        </SignOutButton>
                     </Show>
                 </div>
             </nav>
