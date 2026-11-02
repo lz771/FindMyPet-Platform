@@ -7,6 +7,7 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import Form from 'next/form'
+import { useRouter } from 'next/navigation'
 
 const species = [
     { label: "All", value: "All" },
@@ -88,6 +89,8 @@ const sortBy = [
 ]
 
 export default function FilterForm() {
+    const router = useRouter();
+    
     const [selectedSpecies, setSelectedSpecies] = useState<string | null>("All");
     const [selectedStatus, setSelectedStatus] = useState<string | null>("Lost");
     const [selectedSex, setSelectedSex] = useState<string | null>("All");
@@ -100,6 +103,7 @@ export default function FilterForm() {
         setSelectedSex("All");
         setSelectedState("All");
         setSelectedSortBy("Most recently reported");
+        router.push("/lost-pet-gallery");
     }
 
     return (
