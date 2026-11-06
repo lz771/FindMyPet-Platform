@@ -6,6 +6,8 @@ import { createPostSchema } from '@/lib/validations/schemas';
 import { auth } from "@clerk/nextjs/server"
 import { Sex, Species } from '@/generated/prisma/enums';
 import { revalidatePath } from 'next/cache';
+import { heapSort } from '@/lib/heapSort';
+import { Post } from '@/components/web/PostCard';
 
 export async function createPost(initialState: any, formData: FormData) {
 
@@ -63,7 +65,7 @@ export async function createPost(initialState: any, formData: FormData) {
             where: { userID: dbUser.id }
         })
 
-        if (posts.length > 5){
+        if (posts.length > 5) {
             return {
                 errors: {},
                 message: "Sorry, you can create at most five posts in the FindMyPet Platform",
@@ -95,7 +97,7 @@ export async function createPost(initialState: any, formData: FormData) {
                     state: rawData.state,
                     zipcode: rawData.zipcode,
                 }
-            }) 
+            })
         } else location = existedLocation;
 
         // Store pet data
@@ -163,14 +165,84 @@ export async function createPost(initialState: any, formData: FormData) {
     }
 }
 
+export async function fetchPostsByClerkId(clerkID: string): Promise<{ posts: Post[], username: string }> {
 
+    // Fetch user information from database based on their clerk id
+    const dbUser = await prisma.user.findUnique({
+        where: { clerkID },
+    });
+    
+    if (!dbUser) throw new Error("User not found in the database");
 
+    // Fetch all posts created by the user
+    const posts = await prisma.post.findMany({
+        where: { userID: dbUser.id },
+        select: {
+            id: true,
+            createdAt: true,
+            lastModifiedAt: true,
+            pet: {
+                select: {
+                    id: true,
+                    name: true,
+                    sex: true,
+                    species: true,
+                    dateLastSeen: true,
+                    status: true,
+
+                    location: {
+                        select: {
+                            city: true,
+                            state: true,
+                            zipcode: true,
+                        },
+                    },
+
+                    image: {
+                        select: {
+                            imgUrl: true,
+                            imgAltText: true,
+                        }
+                    },
+                },
+            },
+        },
+    });
+
+    heapSort(posts, "createdAt"); // Sort posts
+
+    return { posts, username: dbUser.username };
+}
+
+export async function deletePost(postID: number) {
+    
+    // Verify authentication
+    const { isAuthenticated, userId } = await auth();
+    if (!isAuthenticated) throw new Error("Unauthenticated!");
+
+    // Check if the clerk id has a mapped user in the database
+    const dbUser = await prisma.user.findUnique({
+        where: { clerkID: userId },
+    });
+    if (!dbUser) throw new Error("User not found in the database");
+
+    // Check if the post belongs to the user
+    const post = await prisma.post.findFirst({
+        where: { userID: dbUser.id,},
+    }); 
+    if (!post) throw new Error("Sorry, this post is not yours. You can only delete your own posts.");
+
+    // Delete the post
+    await prisma.post.delete({
+        where: { id: postID},
+    })
+}
 
 export async function updatePost(formData: FormData) {
 
 }
 
-// for search and filter posts in lost-pet gallery
+// search and filter posts in lost-pet gallery(need change)
 export async function searchPost(formData: FormData) {
 
 }
