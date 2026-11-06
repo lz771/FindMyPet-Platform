@@ -3,6 +3,11 @@ import { Button, buttonVariants } from "../ui/button";
 import Link from "next/link";
 import { Sex, Species, Status } from "@/generated/prisma/enums";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { deletePost } from "@/app/actions/post.action";
+import { PencilIcon, TrashIcon} from "lucide-react"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
+import { useState } from "react";
+import { useRouter } from "next/navigation"
 
 export interface Post {
     id: number;
@@ -28,6 +33,19 @@ export interface Post {
 }
 
 export default function ActivePostCard({ id, pet }: Post) {
+    const [alertDialogOpen, setAlertDialogOpen] = useState(false);
+    const router = useRouter();
+
+    const deletePostAction = async (postID: number) => {
+        try {
+            await deletePost(postID);
+            setAlertDialogOpen(false);
+            router.refresh();
+        } catch (error) {
+            console.log("Failed to delete post:", error);
+        }
+    }
+
     return (
         <div className="w-full max-w-lg mx-auto flex flex-row bg-white rounded-md shadow-lg text-base text-nowrap">
             <div className="relative h-60 w-1/2 shrink-0 rounded-l-md rounded-tr-none bg-gray-200">
@@ -47,12 +65,16 @@ export default function ActivePostCard({ id, pet }: Post) {
                     <h1 className="text-2xl text-nowrap font-bold">{pet?.name}</h1>
 
                     <DropdownMenu>
-                        <DropdownMenuTrigger render={<Button variant="outline" className="ml-auto -translate-y-1 rounded-md">...</Button>} />
-                        <DropdownMenuContent>                    
-                                <DropdownMenuItem>
-                                    <Link href={`/dashboard/edit-post/${id}`}>Edit</Link> 
-                                </DropdownMenuItem>
-                                <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>                       
+                        <DropdownMenuTrigger render={<Button variant="outline" className="ml-auto -translate-y-1 rounded-md font-bold">...</Button>} />
+                        <DropdownMenuContent>
+                            <DropdownMenuItem>
+                                <PencilIcon />
+                                <Link href={`/dashboard/edit-post/${id}`}>Edit</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem variant="destructive" onClick={() => setAlertDialogOpen(true)}>
+                                <TrashIcon />
+                                Delete
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
@@ -67,6 +89,21 @@ export default function ActivePostCard({ id, pet }: Post) {
                     <Link className={buttonVariants({ size: "lg" })} href={`/post-details/${id}`}>View More</Link>
                 </div>
             </div>
+
+            <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
+                <AlertDialogContent size="sm">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-lg font-semibold">Delete this post?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-base">This will permanently delete the post and cannot be undone.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="text-base rounded-sm">Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => deletePostAction(id)} variant="destructive" className="text-base rounded-sm">
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     )
 }
