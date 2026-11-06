@@ -7,16 +7,15 @@
   - Create lost-pet post by completing a report pet form.
   - View all lost-pet reports in the Lost Pet Gallery. 
   - Search and filter all lost-pet reports using a filter form.
-  - Users can view all of their active posts on the dashboard.
-  - Users can manage(update/delete) their active posts.
-  - Require authentication before accessing features, such as post creation and active posts management.
+  - Logged-in users can view and manage(update/delete) their active posts.
+  - Require authentication before accessing protected features, such as post creation and active posts management.
 
-# Optional Features / Enhancement:
+# Optional Features:
   - Email Notification: Users will be informed by email when a lost-pet post with location last seen nearby their city.
   - Account Settings: Users are able to manage their account settings on the dashboard, including updating their username and city, and delete accounts.
   - Map: Have a map on the Post Details Page, showing the last seen location on the map.
   - Bookmark: When logged-in users view the post details on the Post Details page, they can bookmark the post and save it to their dashboard for future review. On the Dashboard page, logged in users are able to view or remove bookmarked posts in their dashboard.
-  - Sorting Posts: Implements a “Sort By” feature in the Lost-Pet Gallery that allows users to sort posts by most recently posted.
+  - Contact Pet Owner Using A Contact Form: Instead of displaying the pet owner's contact email address on the Post Details page, we can replace it with a contact form that allows other users to send messages to the pet owner. The form collects the message and the sender's contact information; however, providing contact information is optional. After the form is submitted, the form data is sent to the pet owner’s email box using Resend, an email delivery API. Users need to sign in before they can submit the contact form, and each user is limited to sending a maximum of three contact form submissions per day.
 
 # Technical Stacks
   - Next.js: A full-stack framework that used to build both the user interface and back-end of my application.
@@ -27,13 +26,19 @@
   - Tailwind CSS: Page styling.
   - Shadcn/ui: Provides built-in UI components(button, input field, card), which I can use to make the UI of my website components look better.
 
-# Tools & Resources I Have Used So Far
+# Tools & Resources
   - Visual Studio Code: A code editor. Allows me to write code and build my project.
   - Git & Github: Version controls and source code backup.
   - Node Package Manager(npm): Install and manage project dependencies and packages.
   - ngrok: Used for Clerk webhook testing.
   - "Lost animals" open dataset: Used as sample data for lost-pet posts.
   - Zod: A Typescript-first library used to validate form inputs by defining validation schema. I used it to validated form data on the server side, and show error messages to the form ui when validation fails.
+
+# User Data & Privacy
+  - Logged-in users are required to provide a contact email address when filling out and submitting the lost-pet report form on the Report Pet Page. There is a message on the page telling users that their contact email address will be displayed on the Post Details Page so that others can contact them if they got any information about the lost pet.
+  - Users are required to provide a username, email address, and password when creating an account. Once the account is successfully created, their account information is stored in Clerk, an external service, for authentication purposes. Their username is also stored in our database and used to personalize the user interface, such as displaying a greeting message on the Dashboard page with the username, and displaying it on the user profile button to indicate the user's current login status.
+
+Note: The display of the post owner's contact information on the Post Details page is intended to be replaced with the contact form described in the Optional Features section. However, due to time constraints, this feature may not be implemented in the current version of the project.
 
 # AI Usage During Development
   - ChatGPT: Used to help me understand error messages I got during development, and concepts of new technologies/tools(Next.js, Prisma, Tailwind css).
@@ -58,6 +63,5 @@
   - After the form is submitted and form data is validated, the updated information synchronized with the PostgreSQL database. Besides that, a user can delete the post by clicking the “Delete” button on the Edit Post page.
 
 # Constraints:
-  - The dataset I found contains data fields I don’t need for my project, which means that I need to clean the data before importing it to my PostgreSQL database.
   - Limited to the United States and is not available globally.
   - Only supports reporting lost pets, it does not include the feature to report found pets.
