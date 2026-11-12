@@ -8,6 +8,7 @@ import { Sex, Species } from '@/generated/prisma/enums';
 import { revalidatePath } from 'next/cache';
 import { heapSort } from '@/lib/heapSort';
 import { Post } from '@/components/web/PostCard';
+import { PostDetails } from '@/components/web/PostDetailsCard';
 
 export async function createPost(initialState: any, formData: FormData) {
 
@@ -171,7 +172,7 @@ export async function fetchPostsByClerkId(clerkID: string): Promise<{ posts: Pos
     const dbUser = await prisma.user.findUnique({
         where: { clerkID },
     });
-    
+
     if (!dbUser) throw new Error("User not found in the database");
 
     // Fetch all posts created by the user
@@ -214,8 +215,56 @@ export async function fetchPostsByClerkId(clerkID: string): Promise<{ posts: Pos
     return { posts, username: dbUser.username };
 }
 
+export async function fetchPostByClerkAndPostIds(clerkID: string, id: number): Promise<{ post: PostDetails }> {
+    // Fetch the matching db user by Clerk ID
+    const dbUser = await prisma.user.findUnique({
+        where: { clerkID },
+    });
+    if (!dbUser) throw new Error("User not found in the database");
+
+    // Fetch the matching post by user id and post id
+    const post = await prisma.post.findUnique({
+        where: {
+            id,
+            userID: dbUser.id
+        },
+        select: {
+            contactEmail: true,
+            pet: {
+                select: {
+                    id: true,
+                    name: true,
+                    sex: true,
+                    species: true,
+                    dateLastSeen: true,
+                    status: true,
+                    description: true,
+
+                    location: {
+                        select: {
+                            city: true,
+                            state: true,
+                            zipcode: true,
+                        },
+                    },
+
+                    image: {
+                        select: {
+                            imgUrl: true,
+                            imgAltText: true,
+                        }
+                    },
+                },
+            },
+        },
+    });
+    if (!post) throw new Error(`No post found for Clerk ID ${clerkID} and post ID ${id}`);
+
+    return { post };
+}
+
 export async function deletePost(postID: number) {
-    
+
     // Verify authentication
     const { isAuthenticated, userId } = await auth();
     if (!isAuthenticated) throw new Error("Unauthenticated!");
@@ -228,13 +277,13 @@ export async function deletePost(postID: number) {
 
     // Check if the post belongs to the user
     const post = await prisma.post.findFirst({
-        where: { userID: dbUser.id,},
-    }); 
+        where: { userID: dbUser.id, },
+    });
     if (!post) throw new Error("Sorry, this post is not yours. You can only delete your own posts.");
 
     // Delete the post
     await prisma.post.delete({
-        where: { id: postID},
+        where: { id: postID },
     })
 }
 
