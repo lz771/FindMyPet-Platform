@@ -2,7 +2,7 @@
 
 import { v2 as cloudinary } from 'cloudinary';
 import { prisma } from '@/lib/prisma'
-import { createPostSchema } from '@/lib/validations/schemas';
+import { createPostSchema, editPostSchema } from '@/lib/validations/schemas';
 import { auth } from "@clerk/nextjs/server"
 import { Sex, Species } from '@/generated/prisma/enums';
 import { revalidatePath } from 'next/cache';
@@ -287,8 +287,46 @@ export async function deletePost(postID: number) {
     })
 }
 
-export async function updatePost(formData: FormData) {
+export async function updatePost(initialState: any, formData: FormData) {
+    // Verify authentication
+    const { isAuthenticated, userId } = await auth()
+    if (!isAuthenticated) {
+        throw new Error("Unauthenticated!");
+    };
 
+    const rawData = {
+        petName: formData.get("petName") as string,
+        species: formData.get("species") as Species,
+        sex: formData.get("sex") as Sex,
+        dateLastSeen: formData.get("dateLastSeen") as string,
+        email: formData.get("email") as string,
+        city: formData.get("city") as string,
+        state: formData.get("state") as string,
+        zipcode: formData.get("zipcode") as string,
+        description: formData.get("description") as string,
+        image: formData.get("image") as File,
+        status: formData.get("status") as string,
+    };
+
+    const validatedFields = editPostSchema.safeParse(rawData);
+
+    // Return if the form data is invalid
+    if (!validatedFields.success) {
+        console.log("Invalid form data");
+        return { 
+            success: false,    
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: "Please fix the input field errors before submitting again.",
+        }
+    }
+
+    console.log(`Success: ${validatedFields}`);
+
+    return {
+        success: true,
+        errors: {},
+        message: "Updates have been saved. Redirecting to dashboard...",
+    }
 }
 
 // search and filter posts in lost-pet gallery(need change)

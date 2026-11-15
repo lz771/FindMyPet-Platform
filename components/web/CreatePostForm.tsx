@@ -76,7 +76,7 @@ const states = [
     { label: "Wyoming", value: "WY" },
 ]
 
-type FormState = {
+export type FormState = {
     errors?: {
         petName?: string[]
         email?: string[]
@@ -194,6 +194,7 @@ export default function CreatePostForm() {
                                     required />
                                 {state.errors?.dateLastSeen && <p className="text-red-500 text-sm">{state.errors.dateLastSeen[0]}</p>}
                             </div>
+                            {state.errors?.dateLastSeen && <p className="text-red-500 text-sm">{state.errors.dateLastSeen[0]}</p>}
                         </div>
 
                         <div className="grid grid-cols-3 gap-5">
