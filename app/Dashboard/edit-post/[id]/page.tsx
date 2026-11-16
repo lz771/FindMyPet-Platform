@@ -29,6 +29,7 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
   return (
     <div>
       <EditPostForm
+        id={Number(id)}
         pet={pet}
         contactEmail={contactEmail}
       />

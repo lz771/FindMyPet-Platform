@@ -102,7 +102,7 @@ const initialState: EditPostFormState = {
     message: "",
 }
 
-export default function EditPostForm({ pet, contactEmail }: PostDetails) {
+export default function EditPostForm({ id, pet, contactEmail }: PostDetails) {
 
     // Catch error messages sent from the server-side validation and display them on the form UI
     const [state, action, isPending] = useActionState<EditPostFormState, FormData>(updatePost, initialState);
@@ -124,7 +124,6 @@ export default function EditPostForm({ pet, contactEmail }: PostDetails) {
     const [city, setCity] = useState(pet?.location.city);
     const [zipcode, setZipcode] = useState(pet?.location.zipcode);
     const [description, setDescription] = useState(pet?.description);
-
 
     // Preview the uploaded image in the form
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -383,6 +382,8 @@ export default function EditPostForm({ pet, contactEmail }: PostDetails) {
                                     className="hidden" />
                                 <FieldError>{state.errors?.image}</FieldError>
                             </div>
+
+                            <input type="hidden" id="postID" name="postID" value={id} />
                         </Card>
                     </FieldSet>
                 </CardContent>
