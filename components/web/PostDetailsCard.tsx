@@ -3,6 +3,7 @@ import { CollapsibleContent, Collapsible, CollapsibleTrigger } from "../ui/colla
 import { Sex, Species, Status } from "@/generated/prisma/enums";
 
 export interface PostDetails {
+    id: number;
     contactEmail: string;
     pet: {
         id: number;

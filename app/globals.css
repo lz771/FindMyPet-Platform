@@ -60,8 +60,8 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(48.735% 0.21111 314.114);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(69.958% 0.17207 54.555);
-  --secondary-foreground: oklch(97.133% 0.014 16.965);
+  --secondary: oklch(0.985 0 0);
+  --secondary-foreground: oklch(48.735% 0.21111 314.114);;
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
@@ -138,6 +138,23 @@
 }
 
 .customized-h1{
-  @apply text-5xl font-bold;
+  @apply text-4xl font-bold;
+}
+
+.form-title{
+  @apply text-3xl font-semibold text-center tracking-wider;
+}
+
+/* sign-in and sign-out buttons ? maybe secondary-btn*/
+.orange-btn{ 
+  @apply bg-light-red-1 text-primary-foreground rounded-md font-semibold hover:bg-light-red-1/80 text-base lg:text-lg h-10 px-4 cursor-pointer;
+}
+/* sign-up buttun? */
+.primary-btn{ 
+  @apply bg-primary text-primary-foreground hover:bg-primary/80 rounded-md font-semibold text-base lg:text-lg h-10 px-4 cursor-pointer;
+}
+
+.secondary-btn{ 
+  @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-gray-300 rounded-md font-semibold text-base lg:text-lg h-10 px-4 cursor-pointer;
 }
 
