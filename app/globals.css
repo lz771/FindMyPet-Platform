@@ -9,6 +9,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
+  --font-electrolize: var(--font-electrolize);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -125,16 +126,15 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply min-h-full bg-yellow-100 w-full text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply font-electrolize;
   }
 }
 
-/* Custom hover effect for links on navigation bar */
 .link-hover-effect {
-  @apply transition-colors  hover:text-fuchsia-600 hover:underline;
+  @apply transition-colors  hover:text-fuchsia-600 hover:underline cursor-pointer;
 }
 
 .customized-h1{
@@ -145,11 +145,14 @@
   @apply text-3xl font-semibold text-center tracking-wider;
 }
 
-/* sign-in and sign-out buttons ? maybe secondary-btn*/
+/* sign-in */
 .orange-btn{ 
   @apply bg-light-red-1 text-primary-foreground rounded-md font-semibold hover:bg-light-red-1/80 text-base lg:text-lg h-10 px-4 cursor-pointer;
 }
-/* sign-up buttun? */
+
+.sign-up-btn{
+  @apply bg-fuchsia-600 text-white rounded-md font-semibold hover:bg-fuchsia-700 text-base lg:text-lg h-10 px-4 cursor-pointer
+}
 .primary-btn{ 
   @apply bg-primary text-primary-foreground hover:bg-primary/80 rounded-md font-semibold text-base lg:text-lg h-10 px-4 cursor-pointer;
 }

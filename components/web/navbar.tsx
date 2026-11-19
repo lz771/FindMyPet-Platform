@@ -22,13 +22,13 @@ export default function Navbar() {
                 <div className="flex items-center gap-4">
                     <Show when="signed-out">
                         <SignUpButton>
-                            <button className="bg-fuchsia-600 text-white rounded-lg font-semibold hover:bg-fuchsia-700 sm:text-base lg:text-lg h-8 sm:h-10 px-4 sm:px-4 cursor-pointer">
+                            <button className="sign-up-btn">
                                 Create Account
                             </button>
                         </SignUpButton>
 
                         <SignInButton>
-                            <button className="bg-light-red-1 text-white rounded-lg font-semibold hover:bg-light-red-2 sm:text-base lg:text-lg h-8 sm:h-10 px-4 sm:px-4 cursor-pointer">
+                            <button className="orange-btn">
                                 Sign In
                             </button>
                         </SignInButton>
