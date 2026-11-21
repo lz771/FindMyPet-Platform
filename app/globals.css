@@ -147,17 +147,20 @@
 
 /* sign-in */
 .orange-btn{ 
-  @apply bg-light-red-1 text-primary-foreground rounded-md font-semibold hover:bg-light-red-1/80 text-base lg:text-lg h-10 px-4 cursor-pointer;
+  @apply bg-light-red-1 text-primary-foreground rounded-md font-semibold hover:bg-light-red-1/80 text-base h-10 px-4 cursor-pointer;
 }
 
 .sign-up-btn{
-  @apply bg-fuchsia-600 text-white rounded-md font-semibold hover:bg-fuchsia-700 text-base lg:text-lg h-10 px-4 cursor-pointer
+  @apply bg-fuchsia-600 text-white rounded-md font-semibold hover:bg-fuchsia-700 text-base h-10 px-4 cursor-pointer
 }
 .primary-btn{ 
-  @apply bg-primary text-primary-foreground hover:bg-primary/80 rounded-md font-semibold text-base lg:text-lg h-10 px-4 cursor-pointer;
+  @apply bg-primary text-primary-foreground hover:bg-primary/80 rounded-md font-semibold text-base h-10 px-4 cursor-pointer;
 }
 
 .secondary-btn{ 
-  @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-gray-300 rounded-md font-semibold text-base lg:text-lg h-10 px-4 cursor-pointer;
+  @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-gray-300 rounded-md font-semibold text-base h-10 px-4 cursor-pointer;
 }
 
+.upload-btn{
+  @apply bg-light-red-1 text-primary-foreground rounded-sm font-semibold hover:bg-light-red-1/80 text-sm h-8 px-2 cursor-pointer;
+}
