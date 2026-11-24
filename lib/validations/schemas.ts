@@ -1,6 +1,8 @@
 import * as z from "zod";
 
- export const createPostSchema = z.object({
+const now = new Date().toLocaleDateString();
+
+export const createPostSchema = z.object({
   petName: z
     .string()
     .nonempty("Pet name is required")
@@ -11,7 +13,7 @@ import * as z from "zod";
     .coerce
     .date("Invalide date")
     .min(new Date("2015-01-01"), { error: "Date cannot before 2015-01-01" })
-    .max(new Date(), { error: "Date cannot be after today" }),
+    .max(new Date(now), { error: "Date cannot be after today" }),
   email: z
     .email("Invalid email")
     .nonempty("Contact email is required")
@@ -54,7 +56,7 @@ export const editPostSchema = z.object({
     .coerce
     .date("Invalide date")
     .min(new Date("2015-01-01"), { error: "Date cannot before 2015-01-01" })
-    .max(new Date(), { error: "Date cannot be after today" }),
+    .max(new Date(now), { error: "Date cannot be after today" }),
   email: z
     .email("Invalid email")
     .nonempty("Contact email is required")
