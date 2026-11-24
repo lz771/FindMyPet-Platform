@@ -1,9 +1,16 @@
 "use server";
 
-// Update user data when they modify their account setting on dashboard
-export async function updateUser(formData: FormData){
-    // validate user first, then update database data
-     const city = formData.get("city");
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
 
-     
+export async function getAuthenticatedUser() {
+    const { isAuthenticated, userId } = await auth();
+    if (!isAuthenticated) throw new Error("Unauthenticated!");
+
+    const dbUser = await prisma.user.findUnique({
+        where: { clerkID: userId },
+    });
+
+    if (!dbUser) throw new Error("User not found in the database");
+    return dbUser;
 }

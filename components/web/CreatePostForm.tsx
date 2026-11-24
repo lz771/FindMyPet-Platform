@@ -31,7 +31,7 @@ export default function CreatePostForm() {
     const [description, setDescription] = useState("");
     const [hasImage, setHasImage] = useState(false);
 
-    // Delete selected image
+    // Remove selected image
     const imgRef = useRef<HTMLInputElement>(null);
     const resetImage = () => {
         if (imgRef.current) {
@@ -40,12 +40,12 @@ export default function CreatePostForm() {
         }
     }
 
-    // Hidden the image delete button when server-side validation fails
+    // Hide the remove image button when server-side validation fails
     useEffect(() => {
             setHasImage(false);
     }, [state]);
 
-    return (
+    return (     
         <Card className="w-full max-w-1/2 mx-auto my-10">
             <CardHeader>
                 <CardTitle className="form-title">Lost Pet Report Form</CardTitle>
@@ -260,7 +260,7 @@ export default function CreatePostForm() {
                     {state.message &&
                         <Alert className={`border max-w-5/6 ${state.success ? "border-green-500 bg-green-50" : "border-red-500 bg-red-50"}`}>
                             <CheckCircle2Icon color={state.success ? "#16A34A" : "#DC2626"} />
-                            <AlertTitle className={state.success ? "text-green-600" : "text-red-600"}>{state.success ? "Post Updated Successfully!" : "Failed to Update the Post"}</AlertTitle>
+                            <AlertTitle className={state.success ? "text-green-600" : "text-red-600"}>{state.success ? "Post Created Successfully!" : "Failed to create a Post"}</AlertTitle>
                             <AlertDescription>{state.message}</AlertDescription>
                         </Alert>
                     }

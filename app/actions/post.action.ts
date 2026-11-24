@@ -9,14 +9,11 @@ import { revalidatePath } from 'next/cache';
 import { heapSort } from '@/lib/heapSort';
 import { Post } from '@/components/web/PostCard';
 import { PostDetails } from '@/components/web/PostDetailsCard';
+import { getAuthenticatedUser } from './user.action';
 
 export async function createPost(initialState: any, formData: FormData) {
-
     // Verify authentication
-    const { isAuthenticated, userId } = await auth()
-    if (!isAuthenticated) {
-        throw new Error("Unauthenticated!");
-    };
+    const dbUser = await getAuthenticatedUser();
 
     const rawData = {
         petName: formData.get("petName") as string,
@@ -37,131 +34,115 @@ export async function createPost(initialState: any, formData: FormData) {
     if (!validatedFields.success) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
-            message: "Error: Fix input field errors before submitting",
+            message: "Please fill out the form correctly before submitting",
+            success: false,
         }
     }
 
+    const posts = await prisma.post.findMany({
+        where: { userID: dbUser.id }
+    })
 
-    console.log(validatedFields);
+    // Users can create a maximum of five posts
+    if (posts.length >= 5) {
+        return {
+            errors: {},
+            message: "Sorry, you can create at most five posts in the FindMyPet Platform",
+            success: false,
+        };
+    }
 
+    // Used to check whether the submitted location already exists in the datebase
+    let location;
+    const existingLocation = await prisma.location.findFirst({
+        where: {
+            city: rawData.city.trim(),
+            state: rawData.state,
+            zipcode: rawData.zipcode,
+        }
+    })
 
-    // Store form data to PostgreSQL database
-
+    // Store form data to database
     try {
-        // Check if the clerk user id mapped to a user record in PosgreSQL database
-        const dbUser = await prisma.user.findUnique({
-            where: { clerkID: userId }
-        })
-
-        if (!dbUser) {
-            console.log("Error: User not found in the database");
-            return {
-                errors: {},
-                message: "Error: Something went wrong, please contact us for details",
-            };
-        }
-
-        // Users can create a maximum of five posts
-        const posts = await prisma.post.findMany({
-            where: { userID: dbUser.id }
-        })
-
-        if (posts.length > 5) {
-            return {
-                errors: {},
-                message: "Sorry, you can create at most five posts in the FindMyPet Platform",
-            };
-        }
-
-        // Store post data
-        const post = await prisma.post.create({
-            data: {
-                contactEmail: rawData.email,
-                userID: dbUser.id,
-            }
-        })
-
-        // Store location data (location data should be unique in the database)
-        let location;
-        const existedLocation = await prisma.location.findFirst({
-            where: {
-                city: rawData.city,
-                state: rawData.state,
-                zipcode: rawData.zipcode,
-            }
-        })
-
-        if (!existedLocation) {
-            location = await prisma.location.create({
+        await prisma.$transaction(async (tx) => {
+            // Store post data
+            const post = await tx.post.create({
                 data: {
-                    city: rawData.city,
-                    state: rawData.state,
-                    zipcode: rawData.zipcode,
+                    contactEmail: rawData.email.trim(),
+                    userID: dbUser.id,
                 }
             })
-        } else location = existedLocation;
 
-        // Store pet data
-        const dateLastSeen = new Date(rawData.dateLastSeen);
-        const pet = await prisma.pet.create({
-            data: {
-                name: rawData.petName,
-                species: rawData.species,
-                sex: rawData.sex,
-                dateLastSeen,
-                description: rawData.description,
-                postID: post.id,
-                locationID: location.id,
-            }
-        })
-
-        // Upload image to Cloudinary (Check if the user has uploaded a pet photo)
-        const imgFile = rawData.image;
-
-        if (imgFile && imgFile.size > 0) {
-            const arrayBuffer = await imgFile.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-
-            // result has the secure_url and public_id for the image uploaded to Cloudinary
-            const result = await new Promise((resolve, reject) => {
-                cloudinary.uploader.upload_stream({ resource_type: "image", folder: "projectFolder" }, (error, results) => {
-                    if (error) {
-                        return reject(error);
-                    } else {
-                        resolve(results);
+            // Store location data
+            if (!existingLocation) {
+                location = await tx.location.create({
+                    data: {
+                        city: rawData.city.trim(),
+                        state: rawData.state,
+                        zipcode: rawData.zipcode,
                     }
-                }).end(buffer);
+                })
+            } else location = existingLocation;
+
+            // Store pet data
+            const dateLastSeen = new Date(rawData.dateLastSeen);
+            const pet = await tx.pet.create({
+                data: {
+                    name: rawData.petName.trim(),
+                    species: rawData.species,
+                    sex: rawData.sex,
+                    dateLastSeen,
+                    description: rawData.description,
+                    postID: post.id,
+                    locationID: location.id,
+                }
             })
 
-            // Store image's secure_url and public_id as image data
-            await prisma.image.create({
-                data: {
-                    cloudinaryImgID: (result as { public_id: string }).public_id,
-                    imgUrl: (result as { secure_url: string }).secure_url,
-                    petID: pet.id,
-                }
-            })
-        } else {
-            // The photo wasn't uploaded
-            await prisma.image.create({
-                data: {
-                    cloudinaryImgID: "no Image ID",
-                    petID: pet.id,
-                }
-            })
-        }
+            // Upload image to Cloudinary 
+            const imgFile = rawData.image;
+
+            if (imgFile && imgFile.size > 0) { // Upload image if the user has selected a pet photo
+                const arrayBuffer = await imgFile.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+
+                // result has the secure_url and public_id for the image uploaded to Cloudinary
+                const result = await new Promise((resolve, reject) => {
+                    cloudinary.uploader.upload_stream({ resource_type: "image", folder: "projectFolder" }, (error, results) => {
+                        if (error) {
+                            return reject(error);
+                        } else {
+                            resolve(results);
+                        }
+                    }).end(buffer);
+                })
+
+                // Store image's secure_url and public_id as image data
+                await tx.image.create({
+                    data: {
+                        cloudinaryImgID: (result as { public_id: string }).public_id,
+                        imgUrl: (result as { secure_url: string }).secure_url,
+                        petID: pet.id,
+                    }
+                })
+            } else {
+                await tx.image.create({
+                    data: { petID: pet.id, }
+                })
+            }
+        })
 
         revalidatePath("/lost-pet-gallery");
         return {
             errors: {},
-            message: "Form is submitted sccessfully. A corresponding Lost pet post is created and display on Lost Pet Gallery",
+            message: "A corresponding lost-pet post is created and displayed in Lost Pet Gallery",
+            success: true,
         }
-
     } catch (error) {
-        console.error("Failed to create post:", error);
+        console.log("Failed to create post:", error);
         return {
-            error: "Failed to create post",
-            message: "Error: Something went wrong, please try it later",
+            errors: {},
+            message: "Failed to create post, please try it later",
+            success: false,
         };
     }
 }
@@ -229,6 +210,7 @@ export async function fetchPostByClerkAndPostIds(clerkID: string, id: number): P
             userID: dbUser.id
         },
         select: {
+            id: true,
             contactEmail: true,
             pet: {
                 select: {
