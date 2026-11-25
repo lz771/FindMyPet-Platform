@@ -64,6 +64,11 @@ export const states = [
     { label: "Wyoming", value: "WY" },
 ]
 
+export const status = [
+    { label: "Lost", value: "Lost" },
+    { label: "Reunited", value: "Reunited" },
+]
+
 export type FormState = {
     success: boolean,
     errors?: {

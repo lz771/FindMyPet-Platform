@@ -11,6 +11,17 @@ import { Post } from '@/components/web/PostCard';
 import { PostDetails } from '@/components/web/PostDetailsCard';
 import { getAuthenticatedUser } from './user.action';
 
+interface SearchAndFilterValues {
+    species?: string;
+    status?: string;
+    sex?: string;
+    state?: string;
+    city?: string;
+    zipcode?: string;
+    petName?: string;
+    petID?: number;
+}
+
 export async function createPost(initialState: any, formData: FormData) {
     // Verify authentication
     const dbUser = await getAuthenticatedUser();
@@ -442,7 +453,81 @@ export async function updatePost(initialState: any, formData: FormData) {
     }
 }
 
-// search and filter posts in lost-pet gallery(need change)
-export async function searchPost(formData: FormData) {
+export async function getMatchingPosts(values: SearchAndFilterValues): Promise<{ posts: Post[] }> {
+    const speciesValue = values.species === "All" ? undefined : values.species as Species;
+    const statusValue = values.status as Status || undefined;
+    const sexValue = values.sex === "All" ? undefined : values.sex as Sex;
+    const stateValue = values.state === "All" ? undefined : values.state as string;
+    const cityValue = values.city as string || undefined;
+    const zipcodeValue = values.zipcode as string || undefined;
+    const petNameValue = values.petName as string || undefined;
+    const petIDValue = Number(values.petID) || undefined;
 
+    // Fetch post data
+    const posts = await prisma.post.findMany({
+        // Filter posts based on submitted filter form data
+        where: {
+            pet: {
+                AND: [
+                    { species: speciesValue },
+                    { status: statusValue },
+                    { sex: sexValue },
+                    {
+                        name: {
+                            equals: petNameValue?.trim(),
+                            mode: "insensitive",
+                        },
+                    },
+                    { id: petIDValue },
+                ],
+
+                location: {
+                    AND: [
+                        { state: stateValue },
+                        {
+                            city: {
+                                equals: cityValue?.trim(),
+                                mode: "insensitive",
+                            },
+                        },
+                        { zipcode: zipcodeValue?.trim() },
+                    ],
+                },
+            },
+        },
+
+        select: {
+            id: true,
+            createdAt: true,
+            lastModifiedAt: true,
+
+            pet: {
+                select: {
+                    id: true,
+                    name: true,
+                    sex: true,
+                    species: true,
+                    dateLastSeen: true,
+                    status: true,
+
+                    location: {
+                        select: {
+                            city: true,
+                            state: true,
+                            zipcode: true,
+                        },
+                    },
+
+                    image: {
+                        select: {
+                            imgUrl: true,
+                            imgAltText: true,
+                        }
+                    },
+                },
+            },
+        },
+    });
+
+    return { posts };
 }

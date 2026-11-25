@@ -8,79 +8,21 @@ import { Label } from "../ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import Form from 'next/form'
 import { useRouter } from 'next/navigation'
+import { sex, species, status, states } from "@/lib/shared/shared"
 
-const species = [
+const speciesOptions = [
     { label: "All", value: "All" },
-    { label: "Cat", value: "Cat" },
-    { label: "Dog", value: "Dog" },
-    { label: "Bird", value: "Bird" },
-    { label: "Other", value: "Other" },
+    ...species,
 ]
 
-const sex = [
+const genderOptions = [
     { label: "All", value: "All" },
-    { label: "Male", value: "Male" },
-    { label: "Female", value: "Female" },
-    { label: "Unknown", value: "Unknown" },
+    ...sex,
 ]
 
-const status = [
-    { label: "Lost", value: "Lost" },
-    { label: "Reunited", value: "Reunited" },
-]
-
-const states = [
+const stateOptions = [
     { label: "All", value: "All" },
-    { label: "Alabama", value: "AL" },
-    { label: "Alaska", value: "AK" },
-    { label: "Arizona", value: "AZ" },
-    { label: "Arkansas", value: "AR" },
-    { label: "California", value: "CA" },
-    { label: "Colorado", value: "CO" },
-    { label: "Connecticut", value: "CT" },
-    { label: "Delaware", value: "DE" },
-    { label: "Florida", value: "FL" },
-    { label: "Georgia", value: "GA" },
-    { label: "Hawaii", value: "HI" },
-    { label: "Idaho", value: "ID" },
-    { label: "Illinois", value: "IL" },
-    { label: "Indiana", value: "IN" },
-    { label: "Iowa", value: "IA" },
-    { label: "Kansas", value: "KS" },
-    { label: "Kentucky", value: "KY" },
-    { label: "Louisiana", value: "LA" },
-    { label: "Maine", value: "ME" },
-    { label: "Maryland", value: "MD" },
-    { label: "Massachusetts", value: "MA" },
-    { label: "Michigan", value: "MI" },
-    { label: "Minnesota", value: "MN" },
-    { label: "Mississippi", value: "MS" },
-    { label: "Missouri", value: "MO" },
-    { label: "Montana", value: "MT" },
-    { label: "Nebraska", value: "NE" },
-    { label: "Nevada", value: "NV" },
-    { label: "New Hampshire", value: "NH" },
-    { label: "New Jersey", value: "NJ" },
-    { label: "New Mexico", value: "NM" },
-    { label: "New York", value: "NY" },
-    { label: "North Carolina", value: "NC" },
-    { label: "North Dakota", value: "ND" },
-    { label: "Ohio", value: "OH" },
-    { label: "Oklahoma", value: "OK" },
-    { label: "Oregon", value: "OR" },
-    { label: "Pennsylvania", value: "PA" },
-    { label: "Rhode Island", value: "RI" },
-    { label: "South Carolina", value: "SC" },
-    { label: "South Dakota", value: "SD" },
-    { label: "Tennessee", value: "TN" },
-    { label: "Texas", value: "TX" },
-    { label: "Utah", value: "UT" },
-    { label: "Vermont", value: "VT" },
-    { label: "Virginia", value: "VA" },
-    { label: "Washington", value: "WA" },
-    { label: "West Virginia", value: "WV" },
-    { label: "Wisconsin", value: "WI" },
-    { label: "Wyoming", value: "WY" },
+    ...states,
 ]
 
 const sortBy = [
@@ -90,7 +32,7 @@ const sortBy = [
 
 export default function FilterForm() {
     const router = useRouter();
-    
+
     const [selectedSpecies, setSelectedSpecies] = useState<string | null>("All");
     const [selectedStatus, setSelectedStatus] = useState<string | null>("Lost");
     const [selectedSex, setSelectedSex] = useState<string | null>("All");
@@ -120,7 +62,7 @@ export default function FilterForm() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                {species.map((item) => (
+                                {speciesOptions.map((item) => (
                                     <SelectItem key={item.value} value={item.value}> {item.label} </SelectItem>
                                 ))}
                             </SelectGroup>
@@ -158,7 +100,7 @@ export default function FilterForm() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                {sex.map((item) => (
+                                {genderOptions.map((item) => (
                                     <SelectItem key={item.value} value={item.value}> {item.label} </SelectItem>
                                 ))}
                             </SelectGroup>
@@ -169,7 +111,7 @@ export default function FilterForm() {
                 <div>
                     <Label htmlFor="state">State</Label>
                     <Combobox
-                        items={states}
+                        items={stateOptions}
                         value={selectedState}
                         onValueChange={(e) => setSelectedState(e)}>
                         <ComboboxInput
